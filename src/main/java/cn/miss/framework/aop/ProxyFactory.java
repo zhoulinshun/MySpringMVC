@@ -28,8 +28,8 @@ public class ProxyFactory {
     }
 
     public void init() {
-        proxy = new ObjectProxy();
         aspectBeanEntities = beanFactory.getAspectBean(new ProxyBeanBuilder());
+        proxy = new ObjectProxy(beanFactory, aspectBeanEntities);
     }
 
     public Object proxy(Object o) {

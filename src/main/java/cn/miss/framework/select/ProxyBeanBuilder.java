@@ -19,12 +19,7 @@ import java.util.Map;
  * @Description:
  * @Date: Created in 2017/10/23.
  */
-public class ProxyBeanBuilder implements BeanBuilder {
-    @Override
-    public Map<String, BeanEntity> select(BeanCore beanCore) {
-        return null;
-    }
-
+public class ProxyBeanBuilder implements BeanBuilder<AspectBean,BeanFactory> {
     @Override
     public Map<String, AspectBean> select(BeanFactory factory) {
         Map<String, AspectBean> map = new HashMap<>();

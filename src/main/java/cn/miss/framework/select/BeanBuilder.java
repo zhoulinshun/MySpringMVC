@@ -13,7 +13,7 @@ import java.util.Map;
  * @Date: Created in 2017/10/9.
  */
 
-public interface BeanBuilder {
-    Map<String, BeanEntity> select(BeanCore beanCore);
-    Map<String, AspectBean> select(BeanFactory factory);
+public interface BeanBuilder<T,V> {
+    Map<String, T> select(V beanCore);
+
 }

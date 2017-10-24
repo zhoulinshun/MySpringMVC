@@ -4,11 +4,14 @@ import cn.miss.framework.annonation.aop.Aop;
 import cn.miss.framework.bean.BeanFactory;
 import cn.miss.framework.bean.JoinPoint;
 import cn.miss.framework.entity.AspectBean;
+import cn.miss.framework.entity.BeanEntity;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +32,7 @@ public class ObjectProxy {
     }
 
     public ObjectProxy() {
-        this(null, null);
+        init();
     }
 
     public void init() {
@@ -65,15 +68,56 @@ public class ObjectProxy {
         }
 
         public void before(JoinPoint joinPoint) {
-            Class<?> aClass = object.getClass();
-            Aop annotation = aClass.getAnnotation(Aop.class);
-
+            BeanEntity beanEntity = beanFactory.getBeanEntity(object.getClass());
+            if (beanEntity != null) {
+                Aop aop = beanEntity.getAop();
+                if (aop != null && aop.before()) {
+                    String[] aspect = aop.aspect();
+                    for (String s : aspect) {
+                        AspectBean aspectBean = aspectBeanMap.get(s);
+                        if (aspectBean != null) {
+                            invoke(joinPoint, aspectBean, aspectBean.getBefore());
+                        }
+                    }
+                }
+            }
 
         }
 
         public void after(JoinPoint joinPoint) {
-
+            BeanEntity beanEntity = beanFactory.getBeanEntity(object.getClass());
+            if (beanEntity != null) {
+                Aop aop = beanEntity.getAop();
+                if (aop != null && aop.after()) {
+                    String[] aspect = aop.aspect();
+                    for (String s : aspect) {
+                        AspectBean aspectBean = aspectBeanMap.get(s);
+                        if (aspectBean != null) {
+                            invoke(joinPoint, aspectBean, aspectBean.getAfter());
+                        }
+                    }
+                }
+            }
         }
+
+        private void invoke(JoinPoint joinPoint, AspectBean aspectBean, List<Method> before) {
+            Object bean = beanFactory.getBean(aspectBean.getClazz());
+            before.forEach(method -> {
+                Parameter[] parameters = method.getParameters();
+                Object[] ps = new Object[parameters.length];
+                for (int i = 0; i < parameters.length; i++) {
+                    if (parameters[i].getType() == JoinPoint.class) {
+                        ps[i] = joinPoint;
+                    }
+                }
+                try {
+                    method.invoke(bean, ps);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
 
     }
 }

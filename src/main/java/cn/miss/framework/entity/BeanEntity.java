@@ -1,5 +1,7 @@
 package cn.miss.framework.entity;
 
+import cn.miss.framework.annonation.aop.Aop;
+
 /**
  * @Author MissNull
  * @Description:
@@ -9,10 +11,10 @@ public class BeanEntity {
     private boolean singleton;
     private Class beanClass;
     private String beanName;
-    private boolean aop;
+    private Aop aop;
 
 
-    public BeanEntity(boolean singleton, Class beanClass, String beanName, boolean aop) {
+    public BeanEntity(boolean singleton, Class beanClass, String beanName, Aop aop) {
         this.singleton = singleton;
         this.beanClass = beanClass;
         this.beanName = beanName;
@@ -31,7 +33,7 @@ public class BeanEntity {
         return singleton;
     }
 
-    public boolean isAop() {
+    public Aop getAop() {
         return aop;
     }
 }

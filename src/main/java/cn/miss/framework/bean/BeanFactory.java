@@ -59,10 +59,9 @@ public class BeanFactory {
 
     private void init(BeanBuilder selector) {
         Logger.log("BeanFactory.init");
-        proxyFactory = new ProxyFactory(this, aop);
         beanEntityMap = selector.select(beanCore);
         beanEntityMap.forEach((s, beanEntity) -> classMap.put(beanEntity.getBeanClass(), s));
-
+        proxyFactory = new ProxyFactory(this, aop);
     }
 
 
@@ -249,7 +248,7 @@ public class BeanFactory {
             }
             returnValue = constructor.newInstance(params);
         }
-        if (beanEntityMap.get(classMap.get(clazz)).isAop()) {
+        if (beanEntityMap.get(classMap.get(clazz)).getAop() != null) {
             return proxyFactory.proxy(returnValue);
         }
         return returnValue;

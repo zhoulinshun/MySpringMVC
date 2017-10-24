@@ -16,7 +16,7 @@ import java.util.Map;
  * @Description:
  * @Date: Created in 2017/10/9.
  */
-public class MVCBeanBuilder implements BeanBuilder {
+public class MVCBeanBuilder implements BeanBuilder<BeanEntity,BeanCore> {
 
     @Override
     public Map<String, BeanEntity> select(BeanCore beanCore) {
@@ -24,7 +24,7 @@ public class MVCBeanBuilder implements BeanBuilder {
         beanCore.getClasses().forEach(aClass -> {
             String beanName;
             boolean singleton;
-            boolean aop;
+            Aop aop;
             Component annotation = (Component) aClass.getAnnotation(Component.class);
             beanName = annotation.value();
             if (beanName.equals("")) {
@@ -34,14 +34,11 @@ public class MVCBeanBuilder implements BeanBuilder {
             }
             Scope scope = (Scope) aClass.getAnnotation(Scope.class);
             singleton = scope == null || scope.singleton();
-            aop = aClass.getAnnotation(Aop.class) != null;
+            aop = (Aop) aClass.getAnnotation(Aop.class);
             map.put(beanName, new BeanEntity(singleton, aClass, beanName, aop));
         });
         return map;
     }
 
-    @Override
-    public Map<String, AspectBean> select(BeanFactory factory) {
-        return null;
-    }
+
 }
