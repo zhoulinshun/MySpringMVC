@@ -64,6 +64,9 @@ public class ObjectProxy {
         }
 
         private JoinPoint getJoinPoint(Object o, Method method, Object[] objects) {
+
+
+
             return new JoinPoint(method, o.getClass(), objects, o);
         }
 
@@ -117,7 +120,6 @@ public class ObjectProxy {
                 }
             });
         }
-
 
     }
 }

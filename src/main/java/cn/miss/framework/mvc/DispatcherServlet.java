@@ -110,7 +110,6 @@ public class DispatcherServlet extends HttpServlet {
                     resp.getWriter().write(json.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
-                    return;
                 }
                 return;
             }
